@@ -22,9 +22,7 @@ Client.on('ready', (client) => {
 Client.on('messageCreate', (message) => {
   // only run this code is the user that wrote the message is NOT a bot
   if (message.author.bot === false) {
-    if (message.content == '!randomreward') {
-      message.reply('correct command!');
-    }
+    message.reply('Hello');
   }
 });
 
