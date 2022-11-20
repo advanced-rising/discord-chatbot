@@ -1,7 +1,7 @@
 // link : https://discord.com/oauth2/authorize?client_id=1043588022895120534&scope=bot&permissions=1
 
 // discord.js node modules
-const { GatewayIntentBits } = require('discord.js');
+const { GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
 const Discord = require('discord.js');
 
 // token contains a string thas is the password for the discord bot
@@ -26,6 +26,58 @@ const Client = new Discord.Client({
 // Ready event capture the state when the bot gets online.
 Client.on('ready', (client) => {
   console.log('This is bot new online', client.user.tag);
+
+  let commands;
+
+  const guild = Client.guilds.cache.get(guildId);
+  if (guild) {
+    commands = guild.commands;
+  } else {
+    commands = Client.application.commands;
+  }
+  const data = new SlashCommandBuilder()
+    .setName('clean')
+    .setDescription('Replies with your input!')
+    .addStringOption((option) => option.setName('input').setDescription('The input to echo back'))
+    .addChannelOption((option) =>
+      option.setName('channel').setDescription('The channel to echo into')
+    );
+  commands?.create({
+    name: 'ping',
+    description: 'Replies with pong.',
+  });
+
+  commands?.create({
+    name: 'add',
+    description: 'Adds two numbers',
+    options: [
+      {
+        name: 'num1',
+        description: 'The first numbers',
+        required: true,
+      },
+      {
+        name: 'num1',
+        description: 'The first numbers',
+        required: true,
+      },
+    ],
+  });
+});
+
+Client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isCommand()) {
+    return;
+  }
+
+  const { commandName, options } = interaction;
+
+  if (commandName === 'ping') {
+    interaction.reply({
+      content: 'pong',
+      ephemeral: true,
+    });
+  }
 });
 
 // Event when a user is added to the server
